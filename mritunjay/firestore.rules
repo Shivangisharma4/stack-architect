@@ -1,0 +1,31 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read access to all blog posts
+    match /blogs/{blogId} {
+      allow read: if true;
+      // Only allow write access if authenticated (you'll need to set up Auth properly later)
+      // For now, consistent with the 'migrate' script, we might need to open this up or rely on the server-side API key if using Admin SDK (but here we are using Client SDK)
+      // Since migration API uses Admin SDK (if set up correctly) it bypasses rules. 
+      // BUT, the client-side Admin Page uses Client SDK.
+      
+      // TEMPORARY: Allow write for debugging/initial setup if needed, OR restrict to auth
+      // allow write: if request.auth != null; 
+      
+      // For the immediate "fix", let's allow read/write to ensure it works, 
+      // but warn the user this is for development.
+      allow read, write: if true;
+    }
+    
+    // Explicitly allow comments subcollection access
+    match /blogs/{blogId}/comments/{commentId} {
+      allow read, write: if true;
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

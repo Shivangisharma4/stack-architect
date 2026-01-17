@@ -1,0 +1,578 @@
+/* Google Fonts - must be loaded via HTML link tags instead to avoid CSS parsing issues */
+@import "tailwindcss";
+
+/* ============================================
+   MRITUNJAY — A Vintage Scholar's Blog
+   Design System: Aged Paper & Dark Ink
+   ============================================ */
+
+
+:root {
+  /* === Aged Paper Palette === */
+  --background: 40 35% 92%;
+  /* Warm parchment #EDE6D6 */
+  --foreground: 25 45% 12%;
+  /* Dark walnut ink #2A1F14 */
+
+  --card: 38 30% 89%;
+  /* Slightly aged paper */
+  --card-foreground: 25 45% 12%;
+
+  --popover: 40 35% 94%;
+  --popover-foreground: 25 45% 12%;
+
+  --primary: 20 65% 22%;
+  /* Burnt sienna #5C2D14 */
+  --primary-foreground: 40 30% 95%;
+
+  --secondary: 35 50% 35%;
+  /* Antique bronze #8B6914 */
+  --secondary-foreground: 40 30% 95%;
+
+  --muted: 35 20% 70%;
+  /* Faded manuscript */
+  --muted-foreground: 25 30% 40%;
+
+  --accent: 42 85% 45%;
+  /* Warm gold #D4A017 */
+  --accent-foreground: 25 45% 12%;
+
+  --destructive: 0 65% 45%;
+  --destructive-foreground: 40 30% 95%;
+
+  --border: 35 25% 75%;
+  --input: 38 25% 85%;
+  --ring: 42 85% 45%;
+
+  --radius: 0.5rem;
+
+  /* === Typography === */
+  --font-heading: 'Cormorant Garamond', 'Noto Serif Devanagari', Georgia, serif;
+  --font-body: 'Spectral', 'Noto Serif Devanagari', Georgia, serif;
+  --font-typewriter: 'Special Elite', monospace;
+  --font-hindi: 'Noto Serif Devanagari', serif;
+
+  /* === Spacing & Sizing === */
+  --header-height: 4rem;
+  --content-max-width: 72rem;
+  --prose-max-width: 42rem;
+}
+
+/* Dark Mode - Antique Leather Study */
+.dark {
+  --background: 25 20% 6%;
+  /* Deep mahogany #100C08 */
+  --foreground: 38 25% 90%;
+  /* Aged vellum #E8E0D0 */
+
+  --card: 25 18% 10%;
+  --card-foreground: 38 25% 90%;
+
+  --popover: 25 20% 8%;
+  --popover-foreground: 38 25% 90%;
+
+  --primary: 42 90% 55%;
+  /* Antique gold #E8B923 */
+  --primary-foreground: 25 20% 6%;
+
+  --secondary: 28 45% 25%;
+  /* Rich brown leather */
+  --secondary-foreground: 38 25% 90%;
+
+  --muted: 25 15% 18%;
+  --muted-foreground: 38 20% 60%;
+
+  --accent: 42 90% 55%;
+  --accent-foreground: 25 20% 6%;
+
+  --destructive: 0 70% 55%;
+  --destructive-foreground: 38 25% 90%;
+
+  --border: 25 15% 15%;
+  --input: 25 15% 12%;
+  --ring: 42 90% 55%;
+}
+
+/* === Theme Configuration === */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* === Base Styles === */
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Aged Paper Texture */
+  background-image:
+    /* Subtle paper fibers */
+    repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      rgba(139, 90, 43, 0.015) 2px,
+      rgba(139, 90, 43, 0.015) 4px),
+    repeating-linear-gradient(90deg,
+      transparent,
+      transparent 2px,
+      rgba(139, 90, 43, 0.015) 2px,
+      rgba(139, 90, 43, 0.015) 4px),
+    /* Coffee stain corners */
+    radial-gradient(ellipse at 5% 10%,
+      rgba(139, 90, 43, 0.04) 0%,
+      transparent 40%),
+    radial-gradient(ellipse at 95% 90%,
+      rgba(139, 90, 43, 0.03) 0%,
+      transparent 35%),
+    /* Subtle vignette */
+    radial-gradient(ellipse at 50% 50%,
+      transparent 50%,
+      rgba(0, 0, 0, 0.02) 100%);
+}
+
+.dark body {
+  background-image:
+    /* Leather grain texture */
+    repeating-linear-gradient(45deg,
+      transparent,
+      transparent 3px,
+      rgba(232, 185, 35, 0.01) 3px,
+      rgba(232, 185, 35, 0.01) 6px),
+    /* Candlelight glow effect */
+    radial-gradient(ellipse at 30% 30%,
+      rgba(232, 185, 35, 0.05) 0%,
+      transparent 50%),
+    radial-gradient(ellipse at 70% 70%,
+      rgba(232, 185, 35, 0.03) 0%,
+      transparent 50%);
+}
+
+/* === Typography === */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: hsl(var(--foreground));
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2.25rem;
+}
+
+h3 {
+  font-size: 1.75rem;
+}
+
+h4 {
+  font-size: 1.375rem;
+}
+
+h5 {
+  font-size: 1.125rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
+
+/* Hindi Text Styling */
+.hindi,
+[lang="hi"] {
+  font-family: var(--font-hindi);
+  line-height: 1.9;
+}
+
+/* Typewriter Font */
+.typewriter {
+  font-family: var(--font-typewriter);
+}
+
+/* === Links === */
+a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: hsl(var(--accent));
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--accent) / 0.4);
+}
+
+.dark a {
+  color: hsl(var(--accent));
+}
+
+.dark a:hover {
+  color: hsl(var(--primary));
+  text-decoration-color: hsl(var(--primary) / 0.5);
+}
+
+/* === Selections === */
+::selection {
+  background: hsl(var(--accent) / 0.3);
+  color: hsl(var(--foreground));
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted) / 0.5);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted) / 0.7);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(var(--accent) / 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--accent) / 0.5);
+}
+
+/* === Focus States === */
+*:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* === Card Styles === */
+.card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow:
+    0 4px 20px -5px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+
+  /* Paper texture on cards */
+  background-image:
+    radial-gradient(ellipse at 30% 40%,
+      hsl(var(--primary) / 0.03) 0%,
+      transparent 60%),
+    radial-gradient(ellipse at 70% 60%,
+      hsl(var(--secondary) / 0.03) 0%,
+      transparent 60%);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 30px -10px rgba(0, 0, 0, 0.15),
+    0 0 0 1px hsl(var(--primary) / 0.2);
+}
+
+.dark .card {
+  box-shadow:
+    0 8px 25px -8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 hsl(var(--accent) / 0.1);
+}
+
+.dark .card:hover {
+  box-shadow:
+    0 16px 40px -12px rgba(0, 0, 0, 0.7),
+    0 0 0 1px hsl(var(--accent) / 0.3);
+}
+
+/* === Button Base === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--primary));
+}
+
+.btn-primary:hover {
+  background: hsl(var(--primary) / 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
+}
+
+.btn-outline {
+  background: transparent;
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+
+.btn-outline:hover {
+  background: hsl(var(--muted) / 0.3);
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+/* === Dot Pattern Background === */
+.dot-pattern {
+  position: relative;
+}
+
+.dot-pattern::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle,
+      hsl(var(--muted-foreground) / 0.15) 1px,
+      transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%,
+      black 40%,
+      transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%,
+      black 40%,
+      transparent 100%);
+}
+
+.dark .dot-pattern::before {
+  background-image: radial-gradient(circle,
+      hsl(var(--accent) / 0.12) 1px,
+      transparent 1px);
+}
+
+/* === Animations === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes typewriter-cursor {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes paper-unfold {
+  from {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(-10deg) translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0deg) translateY(0);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+
+.animate-paper-unfold {
+  animation: paper-unfold 0.8s ease-out;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Stagger children animation */
+.stagger-children>* {
+  animation: slideUp 0.5s ease-out backwards;
+}
+
+.stagger-children>*:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.stagger-children>*:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.stagger-children>*:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.stagger-children>*:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.stagger-children>*:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.stagger-children>*:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+/* === Prose Styles for Blog Content === */
+.prose {
+  max-width: var(--prose-max-width);
+}
+
+.prose p {
+  margin-bottom: 1.5rem;
+}
+
+.prose h2 {
+  margin-top: 3rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.prose h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose blockquote {
+  padding-left: 1.5rem;
+  border-left: 4px solid hsl(var(--accent));
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+  margin: 2rem 0;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.prose code {
+  font-family: var(--font-typewriter);
+  font-size: 0.9em;
+  background: hsl(var(--muted) / 0.3);
+  padding: 0.2em 0.4em;
+  border-radius: calc(var(--radius) - 4px);
+}
+
+/* === Utility Classes === */
+.container {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
