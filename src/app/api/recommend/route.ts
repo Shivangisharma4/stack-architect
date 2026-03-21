@@ -138,17 +138,9 @@ export async function POST(request: NextRequest) {
 
   // STEP 2: Stream hybrid response via SSE
   const encoder = new TextEncoder();
+  const hasApiKey = !!process.env.ANTHROPIC_API_KEY;
 
   try {
-    const client = getClient();
-    const narrationPrompt = buildNarrationPrompt(body, recommendation);
-
-    const stream = await client.messages.stream({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1500,
-      messages: [{ role: "user", content: narrationPrompt }],
-    });
-
     const readable = new ReadableStream({
       async start(controller) {
         try {
@@ -161,19 +153,30 @@ export async function POST(request: NextRequest) {
             encoder.encode(`data: ${JSON.stringify(scoreData)}\n\n`)
           );
 
-          // Stream AI narration
-          for await (const event of stream) {
-            if (
-              event.type === "content_block_delta" &&
-              event.delta.type === "text_delta"
-            ) {
-              const chunk = {
-                type: "narration" as const,
-                text: event.delta.text,
-              };
-              controller.enqueue(
-                encoder.encode(`data: ${JSON.stringify(chunk)}\n\n`)
-              );
+          // Stream AI narration only if API key is configured
+          if (hasApiKey) {
+            const client = getClient();
+            const narrationPrompt = buildNarrationPrompt(body, recommendation);
+
+            const stream = await client.messages.stream({
+              model: "claude-sonnet-4-20250514",
+              max_tokens: 1500,
+              messages: [{ role: "user", content: narrationPrompt }],
+            });
+
+            for await (const event of stream) {
+              if (
+                event.type === "content_block_delta" &&
+                event.delta.type === "text_delta"
+              ) {
+                const chunk = {
+                  type: "narration" as const,
+                  text: event.delta.text,
+                };
+                controller.enqueue(
+                  encoder.encode(`data: ${JSON.stringify(chunk)}\n\n`)
+                );
+              }
             }
           }
 
@@ -191,9 +194,6 @@ export async function POST(request: NextRequest) {
           );
           controller.close();
         }
-      },
-      cancel() {
-        stream.abort();
       },
     });
 
