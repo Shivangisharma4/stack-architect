@@ -90,6 +90,7 @@ export default function BlueprintView({
           {stack.database && <StackCard label="Database" scored={stack.database} />}
           {stack.hosting && <StackCard label="Hosting" scored={stack.hosting} />}
           {stack.language && <StackCard label="Language" scored={stack.language} />}
+          {stack.game && <StackCard label="Game Engine" scored={stack.game} />}
           {stack.mobile && <StackCard label="Mobile Framework" scored={stack.mobile} />}
           {stack.desktop && <StackCard label="Desktop Framework" scored={stack.desktop} />}
           {stack.buildTool && <StackCard label="Build Tool" scored={stack.buildTool} />}

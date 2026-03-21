@@ -30,6 +30,7 @@ function summarizeProject(description: string, signals: NLPSignals, platform: st
     "mobile-cross": "cross-platform mobile app",
     cli: "command-line tool",
     script: "standalone program",
+    game: "game",
   };
   parts.push(platformLabels[platform] ?? "application");
 
@@ -67,6 +68,7 @@ function labelAlternative(
   const coreSlots: { key: keyof SelectedStack; label: string }[] = [
     { key: "frontend", label: "frontend" },
     { key: "backend", label: "backend" },
+    { key: "game", label: "engine" },
     { key: "mobile", label: "framework" },
     { key: "desktop", label: "framework" },
     { key: "language", label: "language" },
@@ -118,6 +120,8 @@ function getLeadCategory(platform: string): TechCategory {
       return "mobile";
     case "desktop":
       return "desktop";
+    case "game":
+      return "game";
     case "cli":
     case "script":
       return "language";
@@ -212,6 +216,7 @@ function getLeadTechId(stack: SelectedStack, category: TechCategory): string | n
     desktop: "desktop",
     language: "language",
     "build-tool": "buildTool",
+    game: "game",
   };
   const key = catMap[category];
   if (!key) return null;

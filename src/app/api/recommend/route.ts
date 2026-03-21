@@ -5,7 +5,7 @@ import { selectStack } from "@/lib/engine";
 import type { FormInputs } from "@/lib/engine/types";
 
 const VALID_PLATFORMS = [
-  "web", "desktop", "mobile-ios", "mobile-android", "mobile-cross", "cli", "script",
+  "web", "desktop", "mobile-ios", "mobile-android", "mobile-cross", "cli", "script", "game",
 ];
 const VALID_SCALES = ["hobby", "startup", "growth", "enterprise"];
 const VALID_TIMELINES = ["hackathon", "weeks", "months", "no-rush"];
@@ -71,6 +71,7 @@ function buildNarrationPrompt(
   addSlot("Database", stack.database);
   addSlot("Hosting", stack.hosting);
   addSlot("Language", stack.language);
+  addSlot("Game Engine", stack.game);
   addSlot("Mobile Framework", stack.mobile);
   addSlot("Desktop Framework", stack.desktop);
   addSlot("Build Tool", stack.buildTool);

@@ -14,6 +14,7 @@ import {
   Desktop,
   Code,
   Wrench,
+  GameController,
 } from "@phosphor-icons/react/dist/ssr";
 
 interface Props {
@@ -37,6 +38,7 @@ const CATEGORY_CONFIG: Record<
   desktop: { icon: Desktop, accent: "text-indigo-400" },
   language: { icon: Code, accent: "text-yellow-400" },
   "build-tool": { icon: Wrench, accent: "text-lime-400" },
+  game: { icon: GameController, accent: "text-red-400" },
 };
 
 const TOP_DIMS: (keyof TechAttributes)[] = [

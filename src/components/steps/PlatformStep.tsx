@@ -8,6 +8,7 @@ import {
   AndroidLogo,
   Terminal,
   Code,
+  GameController,
 } from "@phosphor-icons/react/dist/ssr";
 import type { Platform } from "@/lib/engine/types";
 
@@ -53,6 +54,12 @@ const options: {
     label: "Cross-Platform Mobile",
     desc: "iOS + Android from one codebase",
     icon: DeviceMobile,
+  },
+  {
+    value: "game",
+    label: "Game",
+    desc: "2D / 3D game or interactive experience",
+    icon: GameController,
   },
   {
     value: "cli",

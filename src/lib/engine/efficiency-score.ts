@@ -13,6 +13,7 @@ function getAllTechs(stack: SelectedStack): ScoredTechnology[] {
     stack.frontend, stack.backend, stack.database, stack.hosting,
     stack.orm, stack.auth, stack.cache, stack.cms,
     stack.mobile, stack.desktop, stack.language, stack.buildTool,
+    stack.game,
   ];
   for (const s of slots) {
     if (s) techs.push(s);

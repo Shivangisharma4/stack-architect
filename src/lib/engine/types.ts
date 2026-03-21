@@ -7,7 +7,8 @@ export type Platform =
   | "mobile-android"
   | "mobile-cross"
   | "cli"
-  | "script";
+  | "script"
+  | "game";
 
 // ---- Technology Categories ----
 
@@ -23,7 +24,8 @@ export type TechCategory =
   | "mobile"
   | "desktop"
   | "language"
-  | "build-tool";
+  | "build-tool"
+  | "game";
 
 // ---- Technology Attributes (8 dimensions, 0-10 each) ----
 
@@ -142,6 +144,7 @@ export interface SelectedStack {
   desktop: ScoredTechnology | null;
   language: ScoredTechnology | null;
   buildTool: ScoredTechnology | null;
+  game: ScoredTechnology | null;
 }
 
 export interface AlternativeStack {

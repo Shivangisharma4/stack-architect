@@ -11,7 +11,7 @@ function getStackTechs(stack: SelectedStack): ScoredTechnology[] {
   const techs: ScoredTechnology[] = [];
   const slots: (ScoredTechnology | null)[] = [
     stack.frontend, stack.backend, stack.database, stack.hosting,
-    stack.language, stack.mobile, stack.desktop, stack.buildTool,
+    stack.language, stack.game, stack.mobile, stack.desktop, stack.buildTool,
     stack.orm, stack.auth, stack.cache, stack.cms,
   ];
   for (const s of slots) {

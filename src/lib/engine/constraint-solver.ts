@@ -174,15 +174,38 @@ function selectForCategory(
   let bestCandidate = candidates[0];
   let bestAdjustedScore = -Infinity;
 
+  // Check if any selected tech is a game engine — stronger compat weight needed
+  const gameEngine = selected.find(s => s.technology.category === "game");
+
   for (const candidate of candidates) {
     let compatBonus = 0;
-    if (selected.length > 0) {
+
+    // Hard language-engine compatibility: if a game engine is selected and this is a language,
+    // check if the engine actually supports this language
+    if (gameEngine && candidate.technology.category === "language") {
+      const engineLangs = gameEngine.technology.languages;
+      const candidateLangs = candidate.technology.languages;
+      // Check if any of the candidate's languages overlap with the engine's languages
+      const langMatch = candidateLangs.some(l => engineLangs.includes(l)) ||
+                        engineLangs.some(l => candidate.technology.id.startsWith(l));
+      if (!langMatch) {
+        // This language fundamentally doesn't work with this game engine — massive penalty
+        compatBonus = -5.0;
+      } else {
+        // Perfect language match — big bonus
+        compatBonus = 3.0;
+      }
+    } else if (selected.length > 0) {
       for (const sel of selected) {
-        compatBonus += getCompatibility(candidate.technology.id, sel.technology.id);
+        const compat = getCompatibility(candidate.technology.id, sel.technology.id);
+        const weight = (sel.technology.category === "game" || candidate.technology.category === "game") ? 5.0 : 1.0;
+        compatBonus += compat * weight;
       }
       compatBonus /= selected.length;
     }
-    const adjustedScore = candidate.rawScore + compatBonus * 0.2;
+    // Scale compatibility impact: default 0.2, but 0.6 when game engines are in play
+    const compatScale = gameEngine ? 0.6 : 0.2;
+    const adjustedScore = candidate.rawScore + compatBonus * compatScale;
     if (adjustedScore > bestAdjustedScore) {
       bestAdjustedScore = adjustedScore;
       bestCandidate = { ...candidate, finalScore: adjustedScore };
@@ -236,6 +259,12 @@ function getRelevantSlots(
       return {
         primary: ["mobile"],
         optional: ["database", "backend", "hosting", "auth", "language"],
+      };
+
+    case "game":
+      return {
+        primary: ["game", "language"],
+        optional: ["backend", "database", "hosting", "auth"],
       };
 
     case "web":
@@ -297,16 +326,19 @@ export function solve(
     finalScore: 0,
   }));
 
-  // Group by category and keep top 5 per category for more diversity
+  // Group by category and keep top N per category
   const byCategory = new Map<TechCategory, ScoredTechnology[]>();
   for (const s of scored) {
     const cat = s.technology.category;
     if (!byCategory.has(cat)) byCategory.set(cat, []);
     byCategory.get(cat)!.push(s);
   }
-  for (const [, techs] of byCategory) {
+  for (const [cat, techs] of byCategory) {
     techs.sort((a, b) => b.rawScore - a.rawScore);
-    techs.splice(5);
+    // Keep more language candidates when game platform is selected
+    // because compatibility with the game engine matters more than raw score
+    const limit = (cat === "language" && inputs.platform === "game") ? 15 : 5;
+    techs.splice(limit);
   }
 
   const { primary, optional } = getRelevantSlots(inputs.platform, signals, inputs);
@@ -347,6 +379,7 @@ export function solve(
       desktop: slots.desktop ?? null,
       language: slots.language ?? null,
       buildTool: slots["build-tool"] ?? null,
+      game: slots.game ?? null,
     };
   }
 
@@ -408,6 +441,7 @@ export function solve(
     desktop: selections.desktop ?? null,
     language: selections.language ?? null,
     buildTool: selections["build-tool"] ?? null,
+    game: selections.game ?? null,
   };
 
   // Compare archetype vs algorithmic
@@ -426,6 +460,7 @@ function sumScores(stack: SelectedStack): number {
     stack.frontend, stack.backend, stack.database, stack.hosting,
     stack.orm, stack.auth, stack.cache, stack.cms,
     stack.mobile, stack.desktop, stack.language, stack.buildTool,
+    stack.game,
   ];
   for (const s of slots) {
     if (s) total += s.rawScore;
@@ -457,9 +492,10 @@ export function solveWithExclusions(
     if (!byCategory.has(cat)) byCategory.set(cat, []);
     byCategory.get(cat)!.push(s);
   }
-  for (const [, techs] of byCategory) {
+  for (const [cat, techs] of byCategory) {
     techs.sort((a, b) => b.rawScore - a.rawScore);
-    techs.splice(5);
+    const limit = (cat === "language" && inputs.platform === "game") ? 15 : 5;
+    techs.splice(limit);
   }
 
   const { primary, optional } = getRelevantSlots(inputs.platform, signals, inputs);
@@ -513,5 +549,6 @@ export function solveWithExclusions(
     desktop: selections.desktop ?? null,
     language: selections.language ?? null,
     buildTool: selections["build-tool"] ?? null,
+    game: selections.game ?? null,
   };
 }
