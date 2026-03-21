@@ -415,6 +415,7 @@ export default function Home() {
                 })
               }
               onNext={() => dispatch({ type: "NEXT_STEP" })}
+              onBack={() => dispatch({ type: "PREV_STEP" })}
             />
           )}
           {state.step === 1 && (

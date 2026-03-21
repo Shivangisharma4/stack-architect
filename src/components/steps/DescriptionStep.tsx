@@ -7,6 +7,7 @@ interface Props {
   value: string;
   onChange: (value: string) => void;
   onNext: () => void;
+  onBack: () => void;
 }
 
 // Common English words to check description quality
@@ -64,7 +65,7 @@ function validateDescription(text: string): { valid: boolean; hint: string } {
   return { valid: true, hint: "" };
 }
 
-export default function DescriptionStep({ value, onChange, onNext }: Props) {
+export default function DescriptionStep({ value, onChange, onNext, onBack }: Props) {
   const [focused, setFocused] = useState(false);
   const validation = useMemo(() => validateDescription(value), [value]);
 
@@ -122,13 +123,21 @@ export default function DescriptionStep({ value, onChange, onNext }: Props) {
         </p>
       )}
 
-      <button
-        onClick={onNext}
-        disabled={!validation.valid}
-        className="w-full py-3 rounded-lg text-sm tracking-wide transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50"
-      >
-        Continue
-      </button>
+      <div className="flex gap-3">
+        <button
+          onClick={onBack}
+          className="flex-1 py-3 rounded-lg text-sm text-muted border border-border hover:border-border-light transition-colors"
+        >
+          Back
+        </button>
+        <button
+          onClick={onNext}
+          disabled={!validation.valid}
+          className="flex-1 py-3 rounded-lg text-sm tracking-wide transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50"
+        >
+          Continue
+        </button>
+      </div>
     </div>
   );
 }
