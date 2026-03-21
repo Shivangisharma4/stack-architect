@@ -1,8 +1,7 @@
 import { NextRequest } from "next/server";
-import { getClient } from "@/lib/anthropic";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { selectStack } from "@/lib/engine";
-import type { FormInputs } from "@/lib/engine/types";
+import type { FormInputs, SelectedStack, ScoredTechnology, NLPSignals } from "@/lib/engine/types";
 
 const VALID_PLATFORMS = [
   "web", "desktop", "mobile-ios", "mobile-android", "mobile-cross", "cli", "script", "game",
@@ -54,58 +53,190 @@ function getIP(req: NextRequest): string {
   );
 }
 
-function buildNarrationPrompt(
+// ---- Deterministic Narration Generator ----
+// Generates project-specific reasoning without any AI API call
+
+function getTechNames(stack: SelectedStack): { label: string; name: string; score: number }[] {
+  const entries: { label: string; name: string; score: number }[] = [];
+  const slots: [string, ScoredTechnology | null][] = [
+    ["Frontend", stack.frontend],
+    ["Backend", stack.backend],
+    ["Database", stack.database],
+    ["Hosting", stack.hosting],
+    ["Language", stack.language],
+    ["Game Engine", stack.game],
+    ["Mobile Framework", stack.mobile],
+    ["Desktop Framework", stack.desktop],
+    ["Build Tool", stack.buildTool],
+    ["ORM", stack.orm],
+    ["Auth", stack.auth],
+    ["Cache", stack.cache],
+    ["CMS", stack.cms],
+  ];
+  for (const [label, slot] of slots) {
+    if (slot) entries.push({ label, name: slot.technology.name, score: slot.rawScore });
+  }
+  return entries;
+}
+
+function generateNarration(
   inputs: FormInputs,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   recommendation: any
 ): string {
+  const techs = getTechNames(recommendation.stack);
   const stack = recommendation.stack;
-  const stackSummary: string[] = [];
+  const signals: NLPSignals = recommendation.nlpSignals;
+  const coreNames = techs.slice(0, 4).map(t => t.name);
+  const firstSentence = inputs.projectDescription.split(/[.!?\n]/)[0].trim();
 
-  const addSlot = (label: string, slot: typeof stack.frontend) => {
-    if (slot) stackSummary.push(`${label}: ${slot.technology.name} (score: ${slot.rawScore.toFixed(2)})`);
+  const platformLabel: Record<string, string> = {
+    web: "web application",
+    desktop: "desktop application",
+    "mobile-ios": "iOS app",
+    "mobile-android": "Android app",
+    "mobile-cross": "cross-platform mobile app",
+    cli: "command-line tool",
+    script: "standalone program",
+    game: "game",
   };
+  const platName = platformLabel[inputs.platform] ?? "application";
 
-  addSlot("Frontend", stack.frontend);
-  addSlot("Backend", stack.backend);
-  addSlot("Database", stack.database);
-  addSlot("Hosting", stack.hosting);
-  addSlot("Language", stack.language);
-  addSlot("Game Engine", stack.game);
-  addSlot("Mobile Framework", stack.mobile);
-  addSlot("Desktop Framework", stack.desktop);
-  addSlot("Build Tool", stack.buildTool);
-  addSlot("ORM", stack.orm);
-  addSlot("Auth", stack.auth);
-  addSlot("Cache", stack.cache);
-  addSlot("CMS", stack.cms);
+  const lines: string[] = [];
 
-  return `You are an expert software architect. A deterministic algorithm has selected this tech stack — your job is to explain WHY it's right for THIS SPECIFIC project. Do NOT suggest alternatives or different technologies.
+  // Section 1: Why This Stack Works
+  lines.push("## Why This Stack Works for Your Project");
+  lines.push("");
 
-CRITICAL: Reference the user's actual project by name/purpose. Never give generic advice. Every sentence should connect back to what they're building.
+  // Build a context-aware opening
+  const mainTech = techs[0];
+  lines.push(
+    `For your ${platName} — "${firstSentence}" — the engine selected \`${coreNames.join("` + `")}\` as the core stack, ` +
+    `scoring ${recommendation.efficiencyScore}% efficiency across all weighted dimensions.`
+  );
 
-THE USER'S PROJECT:
-"${inputs.projectDescription}"
-Platform: ${inputs.platform} | Scale: ${inputs.scale} | Timeline: ${inputs.timeline} | Budget: ${inputs.budget}
-Team knows: ${inputs.teamExpertise.join(", ") || "not specified"} | Priorities: ${inputs.priorities.join(", ")}
+  // Explain key tech choices
+  if (stack.game) {
+    const lang = stack.language;
+    lines.push(
+      `\`${stack.game.technology.name}\` is the right engine here` +
+      (lang ? ` paired with \`${lang.technology.name}\`` : "") +
+      ` — it scores ${stack.game.technology.attributes.performanceAtScale}/10 on performance` +
+      ` and ${stack.game.technology.attributes.ecosystemMaturity}/10 on ecosystem maturity,` +
+      ` giving you access to established tooling and community resources.`
+    );
+  } else if (stack.frontend && stack.backend) {
+    lines.push(
+      `\`${stack.frontend.technology.name}\` handles the presentation layer` +
+      ` while \`${stack.backend.technology.name}\` manages server logic` +
+      (stack.database ? ` with \`${stack.database.technology.name}\` for data persistence` : "") +
+      `. This combination scores ${recommendation.compatibilityScore}% on inter-stack compatibility.`
+    );
+  } else if (stack.language) {
+    lines.push(
+      `\`${stack.language.technology.name}\` is the right choice for this —` +
+      ` it scores ${stack.language.technology.attributes.timeToMVP}/10 on time-to-MVP` +
+      ` and ${stack.language.technology.attributes.learningCurve}/10 on learning curve.`
+    );
+  }
 
-THE ALGORITHM CHOSE:
-${stackSummary.join("\n")}
-Efficiency: ${recommendation.efficiencyScore}% | Compatibility: ${recommendation.compatibilityScore}%
-${recommendation.archetypeMatch ? `Pattern: ${recommendation.archetypeMatch}` : ""}
+  // Signal-specific reasoning
+  if (signals.needsAuth > 0.3 && stack.auth) {
+    lines.push(`\`${stack.auth.technology.name}\` handles authentication, which your project requires for secure user access.`);
+  }
+  if (signals.needsRealtime > 0.3) {
+    const realtimeTech = techs.find(t => {
+      const s = recommendation.stack[t.label.toLowerCase().replace(/ /g, "")] as ScoredTechnology | null;
+      return s?.technology.supportsRealtime;
+    });
+    if (realtimeTech) {
+      lines.push(`Real-time capabilities are covered — \`${realtimeTech.name}\` supports WebSocket and event-driven patterns out of the box.`);
+    }
+  }
+  if (signals.needsEcommerce > 0.3) {
+    lines.push("The stack's ecosystem maturity ensures reliable payment integration and transaction handling.");
+  }
 
-Respond exactly in this markdown structure:
+  lines.push("");
 
-## Why This Stack Works for Your Project
-3-4 sentences explaining why THESE SPECIFIC technologies fit THIS project. Name the project. Reference its specific features. Explain how the chosen stack addresses them.
+  // Section 2: How to Build It
+  lines.push("## How to Build It");
+  lines.push("");
 
-## How to Build It
-3-4 bullet points with specific, actionable implementation steps. Reference real libraries, APIs, configurations, or patterns. Every tip must be relevant to their project — not generic "best practices".
+  // Generate actionable steps based on the actual stack
+  if (stack.game) {
+    lines.push(`- Set up your \`${stack.game.technology.name}\` project` +
+      (stack.language ? ` with \`${stack.language.technology.name}\`` : "") +
+      ` — start with the engine's project template to get asset pipelines and build tooling configured`);
+    if (stack.database) {
+      lines.push(`- Use \`${stack.database.technology.name}\` for persistent storage — game saves, player data, and leaderboards`);
+    }
+    lines.push(`- Structure your game loop with clear separation between input handling, update logic, and rendering`);
+    if (signals.needsRealtime > 0.3) {
+      lines.push("- For multiplayer, implement a dedicated server with authoritative game state and client-side prediction");
+    }
+  } else if (stack.frontend && stack.backend) {
+    lines.push(`- Scaffold the \`${stack.frontend.technology.name}\` frontend and \`${stack.backend.technology.name}\` API as separate concerns — ` +
+      (stack.frontend.technology.name.includes("Next") || stack.frontend.technology.name.includes("Nuxt")
+        ? "they share a repo with the meta-framework's API routes"
+        : "connect them via REST or GraphQL endpoints"));
+    if (stack.database && stack.orm) {
+      lines.push(`- Define your schema in \`${stack.orm.technology.name}\` with \`${stack.database.technology.name}\` as the backing store — run migrations early to lock down your data model`);
+    } else if (stack.database) {
+      lines.push(`- Set up \`${stack.database.technology.name}\` with proper indexing from day one — schema changes get expensive later`);
+    }
+    if (stack.auth) {
+      lines.push(`- Wire \`${stack.auth.technology.name}\` for authentication before building protected routes — it's harder to retrofit`);
+    }
+    if (stack.hosting) {
+      lines.push(`- Deploy to \`${stack.hosting.technology.name}\` with CI/CD from the start — even a basic pipeline saves hours`);
+    }
+  } else if (stack.language) {
+    lines.push(`- Start with \`${stack.language.technology.name}\` and keep dependencies minimal — the simpler the project, the fewer moving parts`);
+    if (stack.database) {
+      lines.push(`- Use \`${stack.database.technology.name}\` for any data that needs to persist between runs`);
+    }
+    lines.push("- Write tests for core logic first — they're cheap to add now and expensive to add later");
+  } else if (stack.mobile) {
+    lines.push(`- Initialize your \`${stack.mobile.technology.name}\` project with the recommended project structure`);
+    if (stack.database) {
+      lines.push(`- Use \`${stack.database.technology.name}\` for local data persistence`);
+    }
+    if (stack.auth) {
+      lines.push(`- Integrate \`${stack.auth.technology.name}\` early for user authentication flows`);
+    }
+  }
 
-## What You're Trading Off
-2-3 sentences about what this stack sacrifices and practical ways to mitigate. Be honest but constructive.
+  lines.push("");
 
-Be concise and direct. Write like a senior engineer talking to a peer, not a tutorial.`;
+  // Section 3: Trade-offs
+  lines.push("## What You're Trading Off");
+  lines.push("");
+
+  if (recommendation.tradeoffs.length > 0) {
+    lines.push(recommendation.tradeoffs.slice(0, 3).join(" "));
+  } else {
+    // Generate based on stack characteristics
+    const weakDims: string[] = [];
+    for (const t of techs.slice(0, 3)) {
+      const slot = Object.values(recommendation.stack).find(
+        (s: unknown) => s && (s as ScoredTechnology).technology?.name === t.name
+      ) as ScoredTechnology | undefined;
+      if (slot) {
+        const attrs = slot.technology.attributes;
+        if (attrs.learningCurve < 5) weakDims.push(`\`${t.name}\` has a steeper learning curve (${attrs.learningCurve}/10)`);
+        if (attrs.hiringEase < 4) weakDims.push(`finding developers experienced with \`${t.name}\` may be harder (${attrs.hiringEase}/10 hiring ease)`);
+        if (attrs.timeToMVP < 5) weakDims.push(`\`${t.name}\` trades development speed for power`);
+      }
+    }
+    if (weakDims.length > 0) {
+      lines.push(weakDims.slice(0, 2).join(". Also, ") + ". These are acceptable trade-offs given your priorities.");
+    } else {
+      lines.push("This stack is well-balanced for your constraints with no major blind spots. The main risk is scope creep — keep your MVP focused.");
+    }
+  }
+
+  return lines.join("\n");
 }
 
 export async function POST(request: NextRequest) {
@@ -136,82 +267,60 @@ export async function POST(request: NextRequest) {
   // STEP 1: Algorithmic selection (deterministic, ~5ms)
   const recommendation = selectStack(body);
 
-  // STEP 2: Stream hybrid response via SSE
+  // STEP 2: Generate deterministic narration (no API key needed)
+  const narration = generateNarration(body, recommendation);
+
+  // STEP 3: Stream response via SSE
   const encoder = new TextEncoder();
-  const hasApiKey = !!process.env.ANTHROPIC_API_KEY;
 
-  try {
-    const readable = new ReadableStream({
-      async start(controller) {
-        try {
-          // First chunk: algorithmic results as JSON
-          const scoreData = {
-            type: "scores" as const,
-            data: recommendation,
-          };
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify(scoreData)}\n\n`)
-          );
+  const readable = new ReadableStream({
+    async start(controller) {
+      try {
+        // First chunk: algorithmic results as JSON
+        const scoreData = {
+          type: "scores" as const,
+          data: recommendation,
+        };
+        controller.enqueue(
+          encoder.encode(`data: ${JSON.stringify(scoreData)}\n\n`)
+        );
 
-          // Stream AI narration only if API key is configured
-          if (hasApiKey) {
-            const client = getClient();
-            const narrationPrompt = buildNarrationPrompt(body, recommendation);
-
-            const stream = await client.messages.stream({
-              model: "claude-sonnet-4-20250514",
-              max_tokens: 1500,
-              messages: [{ role: "user", content: narrationPrompt }],
-            });
-
-            for await (const event of stream) {
-              if (
-                event.type === "content_block_delta" &&
-                event.delta.type === "text_delta"
-              ) {
-                const chunk = {
-                  type: "narration" as const,
-                  text: event.delta.text,
-                };
-                controller.enqueue(
-                  encoder.encode(`data: ${JSON.stringify(chunk)}\n\n`)
-                );
-              }
-            }
-          }
-
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ type: "done" })}\n\n`)
-          );
-          controller.close();
-        } catch (err) {
-          const msg =
-            err instanceof Error ? err.message : "Stream interrupted";
+        // Stream narration word-by-word for the typing effect
+        const words = narration.split(/(\s+)/);
+        for (let i = 0; i < words.length; i += 3) {
+          const chunk = words.slice(i, i + 3).join("");
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({ type: "error", message: msg })}\n\n`
+              `data: ${JSON.stringify({ type: "narration", text: chunk })}\n\n`
             )
           );
-          controller.close();
+          // Small delay for streaming feel
+          await new Promise((r) => setTimeout(r, 8));
         }
-      },
-    });
 
-    return new Response(readable, {
-      headers: {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache, no-store",
-        Connection: "keep-alive",
-        "X-Content-Type-Options": "nosniff",
-      },
-    });
-  } catch (err) {
-    console.error("Recommend API error:", err);
+        controller.enqueue(
+          encoder.encode(`data: ${JSON.stringify({ type: "done" })}\n\n`)
+        );
+        controller.close();
+      } catch (err) {
+        const msg =
+          err instanceof Error ? err.message : "Stream interrupted";
+        controller.enqueue(
+          encoder.encode(
+            `data: ${JSON.stringify({ type: "error", message: msg })}\n\n`
+          )
+        );
+        controller.close();
+      }
+    },
+  });
 
-    // Even if AI fails, return the algorithmic results
-    return Response.json({
-      recommendation,
-      aiError: "AI narration unavailable. Algorithmic results are shown.",
-    });
-  }
+  return new Response(readable, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache, no-store",
+      Connection: "keep-alive",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
 }
