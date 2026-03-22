@@ -111,7 +111,7 @@ function generateNarration(
   // Build a context-aware opening
   const mainTech = techs[0];
   lines.push(
-    `For your ${platName} — "${firstSentence}" — the engine selected \`${coreNames.join("` + `")}\` as the core stack, ` +
+    `For your ${platName}, "${firstSentence}", the engine selected \`${coreNames.join("` + `")}\` as the core stack, ` +
     `scoring ${recommendation.efficiencyScore}% efficiency across all weighted dimensions.`
   );
 
@@ -121,7 +121,7 @@ function generateNarration(
     lines.push(
       `\`${stack.game.technology.name}\` is the right engine here` +
       (lang ? ` paired with \`${lang.technology.name}\`` : "") +
-      ` — it scores ${stack.game.technology.attributes.performanceAtScale}/10 on performance` +
+      `, scoring ${stack.game.technology.attributes.performanceAtScale}/10 on performance` +
       ` and ${stack.game.technology.attributes.ecosystemMaturity}/10 on ecosystem maturity,` +
       ` giving you access to established tooling and community resources.`
     );
@@ -134,7 +134,7 @@ function generateNarration(
     );
   } else if (stack.language) {
     lines.push(
-      `\`${stack.language.technology.name}\` is the right choice for this —` +
+      `\`${stack.language.technology.name}\` is the right choice here,` +
       ` it scores ${stack.language.technology.attributes.timeToMVP}/10 on time-to-MVP` +
       ` and ${stack.language.technology.attributes.learningCurve}/10 on learning curve.`
     );
@@ -150,7 +150,7 @@ function generateNarration(
       return s?.technology.supportsRealtime;
     });
     if (realtimeTech) {
-      lines.push(`Real-time capabilities are covered — \`${realtimeTech.name}\` supports WebSocket and event-driven patterns out of the box.`);
+      lines.push(`Real-time capabilities are covered. \`${realtimeTech.name}\` supports WebSocket and event-driven patterns out of the box.`);
     }
   }
   if (signals.needsEcommerce > 0.3) {
@@ -167,36 +167,36 @@ function generateNarration(
   if (stack.game) {
     lines.push(`- Set up your \`${stack.game.technology.name}\` project` +
       (stack.language ? ` with \`${stack.language.technology.name}\`` : "") +
-      ` — start with the engine's project template to get asset pipelines and build tooling configured`);
+      `. Start with the engine's project template to get asset pipelines and build tooling configured`);
     if (stack.database) {
-      lines.push(`- Use \`${stack.database.technology.name}\` for persistent storage — game saves, player data, and leaderboards`);
+      lines.push(`- Use \`${stack.database.technology.name}\` for persistent storage like game saves, player data, and leaderboards`);
     }
     lines.push(`- Structure your game loop with clear separation between input handling, update logic, and rendering`);
     if (signals.needsRealtime > 0.3) {
       lines.push("- For multiplayer, implement a dedicated server with authoritative game state and client-side prediction");
     }
   } else if (stack.frontend && stack.backend) {
-    lines.push(`- Scaffold the \`${stack.frontend.technology.name}\` frontend and \`${stack.backend.technology.name}\` API as separate concerns — ` +
+    lines.push(`- Scaffold the \`${stack.frontend.technology.name}\` frontend and \`${stack.backend.technology.name}\` API as separate concerns. ` +
       (stack.frontend.technology.name.includes("Next") || stack.frontend.technology.name.includes("Nuxt")
         ? "they share a repo with the meta-framework's API routes"
         : "connect them via REST or GraphQL endpoints"));
     if (stack.database && stack.orm) {
-      lines.push(`- Define your schema in \`${stack.orm.technology.name}\` with \`${stack.database.technology.name}\` as the backing store — run migrations early to lock down your data model`);
+      lines.push(`- Define your schema in \`${stack.orm.technology.name}\` with \`${stack.database.technology.name}\` as the backing store. Run migrations early to lock down your data model`);
     } else if (stack.database) {
-      lines.push(`- Set up \`${stack.database.technology.name}\` with proper indexing from day one — schema changes get expensive later`);
+      lines.push(`- Set up \`${stack.database.technology.name}\` with proper indexing from day one. Schema changes get expensive later`);
     }
     if (stack.auth) {
-      lines.push(`- Wire \`${stack.auth.technology.name}\` for authentication before building protected routes — it's harder to retrofit`);
+      lines.push(`- Wire \`${stack.auth.technology.name}\` for authentication before building protected routes. It's harder to retrofit later`);
     }
     if (stack.hosting) {
-      lines.push(`- Deploy to \`${stack.hosting.technology.name}\` with CI/CD from the start — even a basic pipeline saves hours`);
+      lines.push(`- Deploy to \`${stack.hosting.technology.name}\` with CI/CD from the start. Even a basic pipeline saves hours`);
     }
   } else if (stack.language) {
-    lines.push(`- Start with \`${stack.language.technology.name}\` and keep dependencies minimal — the simpler the project, the fewer moving parts`);
+    lines.push(`- Start with \`${stack.language.technology.name}\` and keep dependencies minimal. The simpler the project, the fewer moving parts`);
     if (stack.database) {
       lines.push(`- Use \`${stack.database.technology.name}\` for any data that needs to persist between runs`);
     }
-    lines.push("- Write tests for core logic first — they're cheap to add now and expensive to add later");
+    lines.push("- Write tests for core logic first. They're cheap to add now and expensive to add later");
   } else if (stack.mobile) {
     lines.push(`- Initialize your \`${stack.mobile.technology.name}\` project with the recommended project structure`);
     if (stack.database) {
@@ -232,7 +232,7 @@ function generateNarration(
     if (weakDims.length > 0) {
       lines.push(weakDims.slice(0, 2).join(". Also, ") + ". These are acceptable trade-offs given your priorities.");
     } else {
-      lines.push("This stack is well-balanced for your constraints with no major blind spots. The main risk is scope creep — keep your MVP focused.");
+      lines.push("This stack is well-balanced for your constraints with no major blind spots. The main risk is scope creep, so keep your MVP focused.");
     }
   }
 

@@ -101,7 +101,7 @@ export default function PlatformStep({ value, description, onChange, onNext, onB
         <div className="flex items-center gap-2 p-3 rounded-lg border border-accent/30 bg-accent/5">
           <Lightning className="w-4 h-4 text-accent flex-shrink-0" weight="fill" />
           <p className="text-xs text-accent">
-            We detected <span className="font-semibold">{options.find(o => o.value === detected.platform)?.label}</span> from your description — pre-selected below. You can change it.
+            We detected <span className="font-semibold">{options.find(o => o.value === detected.platform)?.label}</span> from your description. You can change it if needed.
           </p>
         </div>
       )}

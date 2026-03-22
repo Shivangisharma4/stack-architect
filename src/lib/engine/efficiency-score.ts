@@ -156,7 +156,7 @@ export function identifyTradeoffs(
     if (avgScore < 5.5) {
       const label = dimLabels[dim];
       tradeoffs.push(
-        `${label} scores ${avgScore.toFixed(1)}/10 — this stack trades ${label.toLowerCase()} for strength in other areas`
+        `${label} scores ${avgScore.toFixed(1)}/10. This stack trades ${label.toLowerCase()} for strength in other areas`
       );
     }
   }

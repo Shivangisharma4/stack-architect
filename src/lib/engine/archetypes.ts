@@ -210,7 +210,7 @@ export const ARCHETYPES: Archetype[] = [
   {
     id: "browser-game-3d",
     name: "The Browser Game (3D)",
-    description: "Three.js for 3D browser experiences — games, visualizations, interactive 3D scenes.",
+    description: "Three.js for 3D browser experiences: games, visualizations, interactive 3D scenes.",
     triggerSignals: { needsGaming: 0.3, needs3D: 0.3 },
     triggerScale: ["hobby", "startup", "growth"],
     triggerTimeline: ["weeks", "months"],

@@ -53,9 +53,9 @@ function summarizeProject(description: string, signals: NLPSignals, platform: st
     : firstSentence;
 
   if (features.length > 0) {
-    return `A ${parts[0]} — "${condensed}" — requiring ${features.slice(0, 3).join(", ")}`;
+    return `A ${parts[0]}: "${condensed}", requiring ${features.slice(0, 3).join(", ")}`;
   }
-  return `A ${parts[0]} — "${condensed}"`;
+  return `A ${parts[0]}: "${condensed}"`;
 }
 
 // Determine what makes a stack variant different

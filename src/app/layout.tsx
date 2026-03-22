@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Stack Architect — Algorithmic Tech Stack Advisor",
+  title: "Stack Architect | Algorithmic Tech Stack Advisor",
   description:
-    "Get precise, algorithmically-scored technology stack recommendations for your project. Not AI slop — real engineering analysis.",
+    "Get precise, algorithmically-scored technology stack recommendations for your project. Real engineering analysis, not AI slop.",
 };
 
 export default function RootLayout({

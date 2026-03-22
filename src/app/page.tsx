@@ -195,7 +195,7 @@ export default function Home() {
               </h1>
               <p className="text-base text-muted max-w-lg mx-auto leading-relaxed">
                 Tell us what you&apos;re building and we&apos;ll recommend the exact
-                technologies — scored, ranked, and explained. Not the same
+                technologies, scored, ranked, and explained. Not the same
                 answer for everyone.
               </p>
             </div>
@@ -221,7 +221,7 @@ export default function Home() {
                   {
                     step: "01",
                     title: "Describe your project",
-                    desc: "A retro game? A Go microservice? A Flutter fitness app? Just tell us what you\u2019re making — we detect languages, frameworks, and features from your words.",
+                    desc: "A retro game? A Go microservice? A Flutter fitness app? Just tell us what you're making. We detect languages, frameworks, and features from your words.",
                   },
                   {
                     step: "02",

@@ -48,7 +48,7 @@ function validateDescription(text: string): { valid: boolean; hint: string } {
   ).length;
   const recognizedRatio = recognizedCount / words.length;
   if (recognizedRatio < 0.25 && words.length >= 4) {
-    return { valid: false, hint: "That doesn't look like a project description — try explaining what you're building" };
+    return { valid: false, hint: "That doesn't look like a project description. Try explaining what you're building." };
   }
 
   // Check for repeated characters (e.g. "aaaaaaa")
