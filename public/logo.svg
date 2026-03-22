@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!-- Top-left puzzle piece -->
+  <path d="M4 4h16v4.5a3.5 3.5 0 107 0V4h1v16h-4.5a3.5 3.5 0 100 7H28v1H4V4z" fill="currentColor"/>
+  <!-- Top-right puzzle piece -->
+  <path d="M28 4h16v24H39.5a3.5 3.5 0 110-7H44V5h-16v4.5a3.5 3.5 0 11-7 0V4h7z" fill="currentColor" opacity="0.75"/>
+  <!-- Bottom-left puzzle piece -->
+  <path d="M4 28h4.5a3.5 3.5 0 110 7H4v9h24v-4.5a3.5 3.5 0 10-7 0V44H5V28z" fill="currentColor" opacity="0.75"/>
+  <!-- Bottom-right puzzle piece -->
+  <path d="M28 28h16v16H21v-4.5a3.5 3.5 0 117 0V44h16V28h-4.5a3.5 3.5 0 110-7H44v7z" fill="currentColor"/>
+  <!-- Corner dots -->
+  <circle cx="8" cy="8" r="2.5" fill="currentColor" opacity="0.5"/>
+  <circle cx="40" cy="8" r="2.5" fill="currentColor" opacity="0.5"/>
+  <circle cx="8" cy="40" r="2.5" fill="currentColor" opacity="0.5"/>
+  <circle cx="40" cy="40" r="2.5" fill="currentColor" opacity="0.5"/>
+</svg>

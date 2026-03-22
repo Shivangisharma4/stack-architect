@@ -24,7 +24,7 @@ import PlatformStep from "@/components/steps/PlatformStep";
 import DeploymentStep from "@/components/steps/DeploymentStep";
 import SynthesisLoader from "@/components/SynthesisLoader";
 import BlueprintView from "@/components/results/BlueprintView";
-import { Diamond } from "@phosphor-icons/react/dist/ssr";
+import Image from "next/image";
 
 const STEP_LABELS = [
   "Project Intake",
@@ -170,13 +170,13 @@ export default function Home() {
         {/* Nav */}
         <nav className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <Diamond className="w-4 h-4 text-accent" weight="fill" />
-            <span className="text-sm font-medium tracking-wide">
-              Stack Architect
+            <Image src="/logo.svg" alt="Stack Architect" width={24} height={24} className="text-accent" style={{ filter: "brightness(0) invert(0.9)" }} />
+            <span className="text-sm font-medium tracking-wide font-[family-name:var(--font-serif)] italic">
+              stack architect
             </span>
           </div>
           <span className="text-[10px] tracking-[0.15em] uppercase text-muted-dim">
-            93 technologies · 8 dimensions
+            120+ technologies · 8 dimensions
           </span>
         </nav>
 
@@ -259,9 +259,9 @@ export default function Home() {
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                  { stat: "93", label: "Technologies", sub: "from Rust to Flutter to Godot" },
+                  { stat: "120+", label: "Technologies", sub: "from Rust to Flutter to Godot" },
                   { stat: "8", label: "Dimensions", sub: "performance, cost, safety, speed..." },
-                  { stat: "200+", label: "Compatibility pairs", sub: "knows what works together" },
+                  { stat: "470+", label: "Compatibility pairs", sub: "knows what works together" },
                   { stat: "~5ms", label: "Engine time", sub: "algorithm picks, AI explains" },
                 ].map((item) => (
                   <div
@@ -309,9 +309,8 @@ export default function Home() {
         {/* Footer */}
         <footer className="px-6 py-4 border-t border-border">
           <div className="flex items-center justify-between text-xs text-muted-dim">
-            <span className="flex items-center gap-1.5">
-              <Diamond className="w-3 h-3 text-accent/50" weight="fill" />
-              Stack Architect
+            <span className="flex items-center gap-1.5 font-[family-name:var(--font-serif)] italic">
+              stack architect
             </span>
             <span>Deterministic scoring + AI narration</span>
           </div>
@@ -326,9 +325,9 @@ export default function Home() {
       <div className="min-h-screen flex flex-col">
         <nav className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <Diamond className="w-4 h-4 text-accent" weight="fill" />
-            <span className="text-sm font-medium tracking-wide">
-              Stack Architect
+            <Image src="/logo.svg" alt="Stack Architect" width={24} height={24} className="text-accent" style={{ filter: "brightness(0) invert(0.9)" }} />
+            <span className="text-sm font-medium tracking-wide font-[family-name:var(--font-serif)] italic">
+              stack architect
             </span>
           </div>
         </nav>
@@ -345,9 +344,9 @@ export default function Home() {
       <div className="min-h-screen flex flex-col">
         <nav className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <Diamond className="w-4 h-4 text-accent" weight="fill" />
-            <span className="text-sm font-medium tracking-wide">
-              Stack Architect
+            <Image src="/logo.svg" alt="Stack Architect" width={24} height={24} className="text-accent" style={{ filter: "brightness(0) invert(0.9)" }} />
+            <span className="text-sm font-medium tracking-wide font-[family-name:var(--font-serif)] italic">
+              stack architect
             </span>
           </div>
         </nav>
@@ -369,9 +368,9 @@ export default function Home() {
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-4 border-b border-border">
         <div className="flex items-center gap-2">
-          <Diamond className="w-4 h-4 text-accent" weight="fill" />
-          <span className="text-sm font-medium tracking-wide">
-            Stack Architect
+          <Image src="/logo.svg" alt="Stack Architect" width={20} height={20} style={{ filter: "brightness(0) invert(0.9)" }} />
+          <span className="text-sm font-medium tracking-wide font-[family-name:var(--font-serif)] italic">
+            stack architect
           </span>
         </div>
         <span className="text-xs text-muted font-[family-name:var(--font-mono)]">

@@ -317,11 +317,11 @@ export function extractSignals(description: string): NLPSignals {
 const LANGUAGE_PATTERNS: { lang: string; patterns: RegExp[] }[] = [
   { lang: "python", patterns: [/\bpython\b/i, /\bpy\b/i, /\bdjango\b/i, /\bflask\b/i, /\bfastapi\b/i] },
   { lang: "rust", patterns: [/\brust\b/i, /\bcargo\b/i, /\bactix\b/i, /\btokio\b/i] },
-  { lang: "go", patterns: [/\bgolang\b/i, /\bgo\s+(lang|program|app)/i] },
+  { lang: "go", patterns: [/\bgolang\b/i, /\bgo\s+(lang|program|app|api|server|backend|web|project|service|microservice|application|cli|tool|desktop)/i, /\b(using|with|in|built\s+with|built\s+in)\s+go\b/i] },
   { lang: "kotlin", patterns: [/\bkotlin\b/i, /\bjetpack\s+compose\b/i] },
   { lang: "java", patterns: [/\bjava\b/i, /\bspring\b/i, /\bjvm\b/i] },
   { lang: "swift", patterns: [/\bswift\b/i, /\bswiftui\b/i, /\buikit\b/i] },
-  { lang: "csharp", patterns: [/\bc#\b/i, /\bcsharp\b/i, /\b\.net\b/i, /\bmaui\b/i] },
+  { lang: "csharp", patterns: [/\bc#/i, /\bcsharp\b/i, /\b\.net\b/i, /\bdotnet\b/i, /\bmaui\b/i, /\bblazor\b/i, /\basp\.?net\b/i] },
   { lang: "cpp", patterns: [/\bc\+\+\b/i, /\bcpp\b/i, /\bqt\b/i] },
   { lang: "typescript", patterns: [/\btypescript\b/i, /\bts\b/i, /\bnode\.?js\b/i, /\bdeno\b/i, /\bbun\b/i] },
   { lang: "c", patterns: [/\bc\s+(program|language|code)\b/i, /\bin\s+c\b/i, /\busing\s+c\b/i, /\bwith\s+c\b/i] },
@@ -379,6 +379,23 @@ const FRAMEWORK_PATTERNS: { techId: string; patterns: RegExp[] }[] = [
   { techId: "phoenix", patterns: [/\bphoenix\b/i] },
   { techId: "laravel", patterns: [/\blaravel\b/i] },
   { techId: "flask", patterns: [/\bflask\b/i] },
+  // Rust web frameworks
+  { techId: "axum", patterns: [/\baxum\b/i] },
+  { techId: "rocket", patterns: [/\brocket\b(?!\s+(league|launch))/i] },
+  { techId: "leptos", patterns: [/\bleptos\b/i] },
+  { techId: "yew", patterns: [/\byew\b/i] },
+  { techId: "dioxus", patterns: [/\bdioxus\b/i] },
+  { techId: "diesel", patterns: [/\bdiesel\b/i] },
+  // Go frameworks
+  { techId: "echo", patterns: [/\becho\b(?!\s+(chamber|system))/i] },
+  { techId: "wails", patterns: [/\bwails\b/i] },
+  { techId: "bubbletea", patterns: [/\bbubble[\s-]?tea\b/i, /\bbubbletea\b/i, /\bcharm\s+cli\b/i] },
+  // C# / .NET frameworks
+  { techId: "aspnet-core", patterns: [/\basp\.?net\b/i, /\basp\.?net\s+core\b/i] },
+  { techId: "blazor", patterns: [/\bblazor\b/i] },
+  { techId: "ef-core", patterns: [/\bentity\s+framework\b/i, /\bef\s+core\b/i] },
+  // Swift server
+  { techId: "vapor", patterns: [/\bvapor\b/i] },
 ];
 
 // Auto-detect platform from description keywords

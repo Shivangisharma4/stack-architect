@@ -1,4 +1,5 @@
 import type { Archetype, FormInputs, NLPSignals } from "./types";
+import { detectExplicitLanguage } from "./nlp-signals";
 
 export const ARCHETYPES: Archetype[] = [
   // ---- Web Archetypes ----
@@ -128,6 +129,90 @@ export const ARCHETYPES: Archetype[] = [
       hosting: "railway",
       cache: "redis",
     },
+  },
+
+  {
+    id: "rust-web",
+    name: "The Rust Web Stack",
+    description: "Axum for blazing-fast APIs with Leptos for fullstack Rust. Compile-time guarantees and zero-cost abstractions end to end.",
+    triggerSignals: { needsAPI: 0.4 },
+    triggerScale: ["growth", "enterprise"],
+    triggerTimeline: ["months", "no-rush"],
+    triggerPlatforms: ["web"],
+    stack: {
+      frontend: "leptos",
+      backend: "axum",
+      database: "postgresql",
+      hosting: "flyio",
+      orm: "diesel",
+    },
+  },
+  {
+    id: "dotnet-enterprise",
+    name: "The .NET Enterprise",
+    description: "ASP.NET Core with Blazor for full C# across the stack. Entity Framework handles data access with LINQ.",
+    triggerSignals: {},
+    triggerScale: ["growth", "enterprise"],
+    triggerTimeline: ["months", "no-rush"],
+    triggerPlatforms: ["web"],
+    stack: {
+      frontend: "blazor",
+      backend: "aspnet-core",
+      database: "postgresql",
+      hosting: "aws",
+      orm: "ef-core",
+      auth: "auth0",
+    },
+  },
+  {
+    id: "swift-server",
+    name: "The Swift Server",
+    description: "Vapor lets Swift developers build server-side apps using the same language as their iOS apps. Shared models and logic.",
+    triggerSignals: { needsAPI: 0.3 },
+    triggerScale: ["startup", "growth"],
+    triggerTimeline: ["weeks", "months"],
+    triggerPlatforms: ["web"],
+    stack: {
+      backend: "vapor",
+      database: "postgresql",
+      hosting: "flyio",
+    },
+  },
+  {
+    id: "go-api",
+    name: "The Go API",
+    description: "Echo + GORM for clean, fast Go APIs. Minimal memory footprint and effortless concurrency for high-throughput services.",
+    triggerSignals: { needsAPI: 0.5 },
+    triggerScale: ["startup", "growth", "enterprise"],
+    triggerTimeline: ["weeks", "months"],
+    triggerPlatforms: ["web"],
+    stack: {
+      backend: "echo",
+      database: "postgresql",
+      hosting: "flyio",
+      orm: "gorm",
+      cache: "redis",
+    },
+  },
+  {
+    id: "desktop-go",
+    name: "The Go Desktop",
+    description: "Wails combines Go's backend power with web technologies for the frontend. Lightweight alternative to Electron.",
+    triggerSignals: {},
+    triggerScale: ["hobby", "startup"],
+    triggerTimeline: ["weeks", "months"],
+    triggerPlatforms: ["desktop"],
+    stack: { desktop: "wails", language: "go-lang" },
+  },
+  {
+    id: "desktop-dotnet",
+    name: "The .NET Desktop",
+    description: ".NET MAUI for cross-platform desktop and mobile apps using C# and XAML. Microsoft's recommended approach.",
+    triggerSignals: {},
+    triggerScale: ["startup", "growth"],
+    triggerTimeline: ["months", "no-rush"],
+    triggerPlatforms: ["desktop"],
+    stack: { desktop: "maui", language: "csharp-lang" },
   },
 
   // ---- Mobile Archetypes ----
@@ -286,6 +371,9 @@ export function findBestArchetype(
   let bestMatch: Archetype | null = null;
   let bestScore = 0;
 
+  // Detect explicit language from description
+  const explicitLang = detectExplicitLanguage(inputs.projectDescription);
+
   for (const arch of ARCHETYPES) {
     let score = 0;
     let factors = 0;
@@ -302,6 +390,52 @@ export function findBestArchetype(
     const hasStrongGameSignal = signals.needsGaming > 0.3 || signals.needsCreative > 0.3 || signals.needs3D > 0.3;
     if (hasStrongGameSignal && !arch.stack.game) {
       continue;
+    }
+
+    // CRITICAL: If user explicitly mentions a language, skip archetypes
+    // whose stack doesn't include that language's ecosystem
+    if (explicitLang) {
+      const techToLang: Record<string, string[]> = {
+        // TypeScript/JS ecosystem
+        "nextjs": ["typescript"], "sveltekit": ["typescript"], "nuxt": ["typescript"], "remix": ["typescript"],
+        "astro": ["typescript"], "fastify": ["typescript"], "express": ["typescript"], "hono": ["typescript"],
+        "nestjs": ["typescript"], "convex": ["typescript"], "electron": ["typescript"], "typescript-node": ["typescript"],
+        "typescript-lang": ["typescript"],
+        // Python
+        "django": ["python"], "fastapi": ["python"], "flask": ["python"], "python-lang": ["python"],
+        // Ruby
+        "rails": ["ruby"], "ruby-lang": ["ruby"],
+        // Java
+        "spring-boot": ["java", "kotlin"], "java-lang": ["java"],
+        // Go
+        "go-fiber": ["go"], "go-lang": ["go"], "gin": ["go"], "echo": ["go"], "wails": ["go"], "cobra": ["go"], "bubbletea": ["go"], "gorm": ["go"],
+        // Rust
+        "rust-lang": ["rust"], "axum": ["rust"], "actix": ["rust"], "rocket": ["rust"], "leptos": ["rust"],
+        "yew": ["rust"], "dioxus": ["rust"], "tauri": ["rust"], "cargo": ["rust"], "clap": ["rust"],
+        "diesel": ["rust"], "seaorm": ["rust"], "bevy": ["rust"],
+        // Swift
+        "swift-lang": ["swift"], "swiftui": ["swift"], "swift-ui": ["swift"], "swiftui-macos": ["swift"], "vapor": ["swift"],
+        // Kotlin
+        "kotlin-lang": ["kotlin"], "jetpack-compose": ["kotlin"], "ktor": ["kotlin"], "kobweb": ["kotlin"],
+        "kotlin-js": ["kotlin"], "kotlin-wasm": ["kotlin"], "kotlin-multiplatform": ["kotlin"],
+        // C#
+        "csharp-lang": ["csharp"], "aspnet-core": ["csharp"], "blazor": ["csharp"], "maui": ["csharp"], "ef-core": ["csharp"],
+        // PHP
+        "laravel": ["php"], "php-lang": ["php"],
+        // Elixir
+        "phoenix": ["elixir"], "elixir-lang": ["elixir"],
+        // Dart
+        "flutter": ["dart"], "dart-lang": ["dart"],
+      };
+
+      const archLanguages = new Set<string>();
+      for (const techId of Object.values(arch.stack)) {
+        const langs = techToLang[techId];
+        if (langs) langs.forEach(l => archLanguages.add(l));
+      }
+      if (archLanguages.size > 0 && !archLanguages.has(explicitLang)) {
+        continue; // Skip archetypes that don't match the explicit language
+      }
     }
 
     // Scale match
@@ -339,14 +473,17 @@ export function findBestArchetype(
         archLanguages.add("typescript");
         archLanguages.add("javascript");
       }
-      if (techId === "django" || techId === "fastapi" || techId === "python-lang") archLanguages.add("python");
+      if (techId === "django" || techId === "fastapi" || techId === "flask" || techId === "python-lang") archLanguages.add("python");
       if (techId === "rails") archLanguages.add("ruby");
       if (techId === "spring-boot") archLanguages.add("java");
-      if (techId === "go-fiber" || techId === "go-lang") archLanguages.add("go");
-      if (techId === "rust-lang") archLanguages.add("rust");
-      if (techId === "swift-lang" || techId === "swiftui") archLanguages.add("swift");
-      if (techId === "kotlin-lang" || techId === "jetpack-compose") archLanguages.add("kotlin");
+      if (techId === "go-fiber" || techId === "go-lang" || techId === "gin" || techId === "echo" || techId === "wails") archLanguages.add("go");
+      if (techId === "rust-lang" || techId === "axum" || techId === "actix" || techId === "rocket" || techId === "leptos" || techId === "yew" || techId === "dioxus") archLanguages.add("rust");
+      if (techId === "swift-lang" || techId === "swiftui" || techId === "vapor") archLanguages.add("swift");
+      if (techId === "kotlin-lang" || techId === "jetpack-compose" || techId === "ktor" || techId === "kobweb") archLanguages.add("kotlin");
       if (techId === "typescript-node" || techId === "electron") archLanguages.add("typescript");
+      if (techId === "csharp-lang" || techId === "aspnet-core" || techId === "blazor" || techId === "maui") archLanguages.add("csharp");
+      if (techId === "laravel") archLanguages.add("php");
+      if (techId === "phoenix") archLanguages.add("elixir");
     }
 
     const expertiseOverlap = inputs.teamExpertise.filter((e) =>

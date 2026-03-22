@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: "Stack Architect | Algorithmic Tech Stack Advisor",
   description:
     "Get precise, algorithmically-scored technology stack recommendations for your project. Real engineering analysis, not AI slop.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

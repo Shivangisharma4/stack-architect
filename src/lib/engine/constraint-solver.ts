@@ -70,7 +70,12 @@ function scoreTechnology(
       // but don't kill non-matching (Next.js is fine as frontend for Rust backend)
       score *= 0.85;
     }
-    // Categories like database, hosting, cache, auth — no penalty
+    // Hosting with language restrictions (e.g., Vercel is JS-only)
+    // Apply moderate penalty if it doesn't support the user's language
+    if (tech.category === "hosting" && !techUsesExplicitLang) {
+      score *= 0.6;
+    }
+    // Categories like database, cache, auth — no penalty
   }
 
   // ---- EXPLICIT FRAMEWORK MENTION ----
@@ -420,7 +425,7 @@ export function solve(
 
       // Skip ORM if backend already has a built-in one (Laravel=Eloquent, Django=Django ORM, Rails=ActiveRecord)
       const backendId = selections.backend?.technology.id;
-      const backendsWithBuiltInORM = ["laravel", "django", "rails", "spring-boot", "phoenix"];
+      const backendsWithBuiltInORM = ["laravel", "django", "rails", "spring-boot", "phoenix", "vapor"];
       if (backendId && backendsWithBuiltInORM.includes(backendId)) continue;
 
       // Filter ORM candidates to only those sharing a language with the backend
@@ -531,7 +536,7 @@ export function solveWithExclusions(
       const dbTags = selections.database?.technology.tags ?? [];
       if (!dbTags.includes("sql") || dbTags.includes("baas")) continue;
       const backendId = selections.backend?.technology.id;
-      const backendsWithBuiltInORM = ["laravel", "django", "rails", "spring-boot", "phoenix"];
+      const backendsWithBuiltInORM = ["laravel", "django", "rails", "spring-boot", "phoenix", "vapor"];
       if (backendId && backendsWithBuiltInORM.includes(backendId)) continue;
       const backendLangs = selections.backend?.technology.languages ?? [];
       if (backendLangs.length > 0) {

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#1a1a2e"/>
+  <!-- Simplified 4-piece puzzle in light color -->
+  <path d="M5 5h9v2.5a2.5 2.5 0 105 0V5h1v9h-2.5a2.5 2.5 0 100 5H20v1H5V5z" fill="#e5e5e5"/>
+  <path d="M20 5h7v15h-2.5a2.5 2.5 0 110-5H27V6h-7v2.5a2.5 2.5 0 11-5 0V5h5z" fill="#e5e5e5" opacity="0.7"/>
+  <path d="M5 20h2.5a2.5 2.5 0 110 5H5v2h15v-2.5a2.5 2.5 0 10-5 0V27H6V20z" fill="#e5e5e5" opacity="0.7"/>
+  <path d="M20 20h7v7h-12v-2.5a2.5 2.5 0 115 0V27h7v-7h-2.5a2.5 2.5 0 110-5H27v5z" fill="#e5e5e5"/>
+  <!-- Dots -->
+  <circle cx="8" cy="8" r="1.5" fill="#8b7355"/>
+  <circle cx="24" cy="8" r="1.5" fill="#8b7355"/>
+  <circle cx="8" cy="24" r="1.5" fill="#8b7355"/>
+  <circle cx="24" cy="24" r="1.5" fill="#8b7355"/>
+</svg>
