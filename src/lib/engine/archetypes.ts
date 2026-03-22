@@ -76,7 +76,6 @@ export const ARCHETYPES: Archetype[] = [
     triggerTimeline: ["months", "no-rush"],
     triggerPlatforms: ["web"],
     stack: {
-      frontend: "nextjs",
       backend: "fastapi",
       database: "postgresql",
       hosting: "railway",
@@ -108,7 +107,6 @@ export const ARCHETYPES: Archetype[] = [
     triggerTimeline: ["months", "no-rush"],
     triggerPlatforms: ["web"],
     stack: {
-      frontend: "nextjs",
       backend: "go-fiber",
       database: "postgresql",
       hosting: "flyio",
@@ -318,13 +316,20 @@ export function findBestArchetype(
       if (arch.triggerTimeline.includes(inputs.timeline)) score += 1;
     }
 
-    // Signal matches
-    for (const [signal, threshold] of Object.entries(arch.triggerSignals)) {
-      factors++;
-      const signalValue = signals[signal as keyof NLPSignals];
-      if (signalValue >= (threshold as number)) {
-        score += 1 + signalValue;
+    // Signal matches - if archetype requires signals, at least ONE must match
+    const signalEntries = Object.entries(arch.triggerSignals);
+    if (signalEntries.length > 0) {
+      let anySignalMatched = false;
+      for (const [signal, threshold] of signalEntries) {
+        factors++;
+        const signalValue = signals[signal as keyof NLPSignals];
+        if (signalValue >= (threshold as number)) {
+          score += 1 + signalValue;
+          anySignalMatched = true;
+        }
       }
+      // If archetype needs specific signals and NONE matched, skip it
+      if (!anySignalMatched) continue;
     }
 
     // Team expertise match

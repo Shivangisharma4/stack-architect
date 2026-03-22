@@ -276,6 +276,13 @@ function getRelevantSlots(
           optional: ["backend", "database", "hosting", "auth"],
         };
       }
+      // If it's a service/API app, backend is primary, frontend is optional
+      if (signals.needsAPI > 0.4 && signals.needsSEO < 0.3 && signals.needsCMS < 0.3) {
+        return {
+          primary: ["backend", "database", "hosting", "language"],
+          optional: ["orm", "auth", "cache", "frontend"],
+        };
+      }
       return {
         primary: ["frontend", "backend", "database", "hosting"],
         optional: ["orm", "auth", "cache", "cms", "language"],
