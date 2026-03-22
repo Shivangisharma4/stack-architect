@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   Globe,
   Desktop,
@@ -9,11 +10,14 @@ import {
   Terminal,
   Code,
   GameController,
+  Lightning,
 } from "@phosphor-icons/react/dist/ssr";
 import type { Platform } from "@/lib/engine/types";
+import { detectPlatform } from "@/lib/engine/nlp-signals";
 
 interface Props {
   value: Platform;
+  description: string;
   onChange: (value: Platform) => void;
   onNext: () => void;
   onBack: () => void;
@@ -75,7 +79,9 @@ const options: {
   },
 ];
 
-export default function PlatformStep({ value, onChange, onNext, onBack }: Props) {
+export default function PlatformStep({ value, description, onChange, onNext, onBack }: Props) {
+  const detected = useMemo(() => detectPlatform(description), [description]);
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -90,10 +96,21 @@ export default function PlatformStep({ value, onChange, onNext, onBack }: Props)
         </p>
       </div>
 
+      {/* Auto-detected hint */}
+      {detected && (
+        <div className="flex items-center gap-2 p-3 rounded-lg border border-accent/30 bg-accent/5">
+          <Lightning className="w-4 h-4 text-accent flex-shrink-0" weight="fill" />
+          <p className="text-xs text-accent">
+            We detected <span className="font-semibold">{options.find(o => o.value === detected.platform)?.label}</span> from your description — pre-selected below. You can change it.
+          </p>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-3">
         {options.map((opt) => {
           const Icon = opt.icon;
           const selected = value === opt.value;
+          const isDetected = detected?.platform === opt.value;
           return (
             <button
               key={opt.value}
@@ -104,12 +121,19 @@ export default function PlatformStep({ value, onChange, onNext, onBack }: Props)
                   : "border-border hover:border-border-light bg-surface"
               }`}
             >
-              <Icon
-                className={`w-5 h-5 mb-2 ${
-                  selected ? "text-accent" : "text-muted"
-                }`}
-                weight="light"
-              />
+              <div className="flex items-center justify-between mb-2">
+                <Icon
+                  className={`w-5 h-5 ${
+                    selected ? "text-accent" : "text-muted"
+                  }`}
+                  weight="light"
+                />
+                {isDetected && !selected && (
+                  <span className="text-[9px] tracking-wider uppercase text-accent/60">
+                    detected
+                  </span>
+                )}
+              </div>
               <div className="text-sm font-medium text-foreground">
                 {opt.label}
               </div>

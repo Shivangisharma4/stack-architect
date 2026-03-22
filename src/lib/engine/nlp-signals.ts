@@ -378,6 +378,105 @@ const FRAMEWORK_PATTERNS: { techId: string; patterns: RegExp[] }[] = [
   { techId: "flask", patterns: [/\bflask\b/i] },
 ];
 
+// Auto-detect platform from description keywords
+// Returns the detected platform or null if ambiguous
+import type { Platform } from "./types";
+
+const PLATFORM_PATTERNS: { platform: Platform; patterns: RegExp[]; keywords: string[] }[] = [
+  {
+    platform: "game",
+    patterns: [
+      /\bgame\b/i, /\bgaming\b/i, /\bplatformer\b/i, /\bshooter\b/i,
+      /\brpg\b/i, /\bpuzzle\s+game\b/i, /\barcade\b/i, /\bgame\s+engine\b/i,
+      /\b(bevy|phaser|pygame|godot|love2d|unity|unreal)\b/i,
+    ],
+    keywords: ["game", "gaming", "platformer", "shooter", "rpg", "arcade", "sprite", "tilemap"],
+  },
+  {
+    platform: "mobile-ios",
+    patterns: [
+      /\bios\s+app\b/i, /\biphone\s+app\b/i, /\bipad\s+app\b/i,
+      /\bswiftui\b/i, /\buikit\b/i, /\bapple\s+(app|store)\b/i,
+    ],
+    keywords: ["ios", "iphone", "ipad", "swiftui"],
+  },
+  {
+    platform: "mobile-android",
+    patterns: [
+      /\bandroid\s+app\b/i, /\bjetpack\s+compose\b/i,
+      /\bgoogle\s+play\b/i, /\bandroid\s+studio\b/i,
+    ],
+    keywords: ["android"],
+  },
+  {
+    platform: "mobile-cross",
+    patterns: [
+      /\bcross[\s-]?platform\s+(mobile|app)\b/i,
+      /\bios\s+(and|&|\+)\s+android\b/i,
+      /\breact[\s-]native\b/i, /\bflutter\b/i, /\bexpo\b/i,
+    ],
+    keywords: ["cross-platform", "react-native", "flutter"],
+  },
+  {
+    platform: "desktop",
+    patterns: [
+      /\bdesktop\s+app\b/i, /\btauri\b/i, /\belectron\b/i,
+      /\bnative\s+desktop\b/i, /\bwindows\s+app\b/i, /\bmac\s+app\b/i,
+    ],
+    keywords: ["desktop", "tauri", "electron"],
+  },
+  {
+    platform: "cli",
+    patterns: [
+      /\bcli\s+(tool|app)\b/i, /\bcommand[\s-]?line\b/i,
+      /\bterminal\s+(tool|app)\b/i,
+    ],
+    keywords: ["cli", "command-line", "terminal"],
+  },
+  {
+    platform: "script",
+    patterns: [
+      /\bscript\b/i, /\bautomation\b/i, /\bscraper\b/i,
+      /\butility\b/i, /\bcalculator\b/i,
+    ],
+    keywords: ["script", "scraper", "automation", "utility"],
+  },
+  {
+    platform: "web",
+    patterns: [
+      /\bweb\s*(site|app|application|page)\b/i, /\bwebsite\b/i,
+      /\bdashboard\b/i, /\blanding\s+page\b/i, /\bblog\b/i,
+      /\be[\s-]?commerce\b/i, /\bsaas\b/i, /\bweb\s+portal\b/i,
+    ],
+    keywords: ["website", "webapp", "saas", "dashboard", "blog", "landing"],
+  },
+];
+
+export function detectPlatform(description: string): { platform: Platform; confidence: number } | null {
+  const descLower = description.toLowerCase();
+  let bestPlatform: Platform | null = null;
+  let bestScore = 0;
+
+  for (const { platform, patterns, keywords } of PLATFORM_PATTERNS) {
+    let score = 0;
+    for (const pat of patterns) {
+      if (pat.test(description)) score += 2;
+    }
+    for (const kw of keywords) {
+      if (descLower.includes(kw)) score += 1;
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestPlatform = platform;
+    }
+  }
+
+  if (bestPlatform && bestScore >= 2) {
+    return { platform: bestPlatform, confidence: Math.min(bestScore / 6, 1) };
+  }
+  return null;
+}
+
 export function detectExplicitFrameworks(description: string): string[] {
   const matches: string[] = [];
   for (const { techId, patterns } of FRAMEWORK_PATTERNS) {

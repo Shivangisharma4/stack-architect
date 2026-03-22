@@ -11,7 +11,9 @@ import type {
   Budget,
   DeploymentPref,
   Priority,
+  Platform,
 } from "@/lib/engine/types";
+import { detectPlatform } from "@/lib/engine/nlp-signals";
 import DescriptionStep from "@/components/steps/DescriptionStep";
 import ScaleStep from "@/components/steps/ScaleStep";
 import TimelineStep from "@/components/steps/TimelineStep";
@@ -414,13 +416,21 @@ export default function Home() {
                   value: v,
                 })
               }
-              onNext={() => dispatch({ type: "NEXT_STEP" })}
+              onNext={() => {
+                // Auto-detect platform from description before advancing
+                const detected = detectPlatform(state.inputs.projectDescription);
+                if (detected) {
+                  dispatch({ type: "SET_FIELD", field: "platform", value: detected.platform });
+                }
+                dispatch({ type: "NEXT_STEP" });
+              }}
               onBack={() => dispatch({ type: "PREV_STEP" })}
             />
           )}
           {state.step === 1 && (
             <PlatformStep
               value={state.inputs.platform}
+              description={state.inputs.projectDescription}
               onChange={(v) =>
                 dispatch({ type: "SET_FIELD", field: "platform", value: v })
               }
