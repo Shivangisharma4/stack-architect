@@ -1,15 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <!-- Top-left puzzle piece -->
-  <path d="M4 4h16v4.5a3.5 3.5 0 107 0V4h1v16h-4.5a3.5 3.5 0 100 7H28v1H4V4z" fill="currentColor"/>
-  <!-- Top-right puzzle piece -->
-  <path d="M28 4h16v24H39.5a3.5 3.5 0 110-7H44V5h-16v4.5a3.5 3.5 0 11-7 0V4h7z" fill="currentColor" opacity="0.75"/>
-  <!-- Bottom-left puzzle piece -->
-  <path d="M4 28h4.5a3.5 3.5 0 110 7H4v9h24v-4.5a3.5 3.5 0 10-7 0V44H5V28z" fill="currentColor" opacity="0.75"/>
-  <!-- Bottom-right puzzle piece -->
-  <path d="M28 28h16v16H21v-4.5a3.5 3.5 0 117 0V44h16V28h-4.5a3.5 3.5 0 110-7H44v7z" fill="currentColor"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
+  <!-- Top-left piece: tab right, tab down -->
+  <path d="M5,5 H50 V19 C62,19 62,31 50,31 V50 H31 C31,62 19,62 19,50 H5 Z"/>
+  <!-- Top-right piece: slot left, tab down -->
+  <path d="M50,5 H95 V50 H81 C81,62 69,62 69,50 H50 V31 C62,31 62,19 50,19 Z" opacity="0.75"/>
+  <!-- Bottom-left piece: slot top, tab right -->
+  <path d="M5,50 H19 C19,62 31,62 31,50 H50 V69 C62,69 62,81 50,81 V95 H5 Z" opacity="0.75"/>
+  <!-- Bottom-right piece: slot left, slot top -->
+  <path d="M50,50 H69 C69,62 81,62 81,50 H95 V95 H50 V81 C62,81 62,69 50,69 Z"/>
   <!-- Corner dots -->
-  <circle cx="8" cy="8" r="2.5" fill="currentColor" opacity="0.5"/>
-  <circle cx="40" cy="8" r="2.5" fill="currentColor" opacity="0.5"/>
-  <circle cx="8" cy="40" r="2.5" fill="currentColor" opacity="0.5"/>
-  <circle cx="40" cy="40" r="2.5" fill="currentColor" opacity="0.5"/>
+  <circle cx="5" cy="5" r="3.5" opacity="0.7"/>
+  <circle cx="95" cy="5" r="3.5" opacity="0.7"/>
+  <circle cx="5" cy="95" r="3.5" opacity="0.7"/>
+  <circle cx="95" cy="95" r="3.5" opacity="0.7"/>
+  <!-- Mid-edge dots -->
+  <circle cx="50" cy="5" r="3" opacity="0.7"/>
+  <circle cx="50" cy="95" r="3" opacity="0.7"/>
+  <circle cx="5" cy="50" r="3" opacity="0.7"/>
+  <circle cx="95" cy="50" r="3" opacity="0.7"/>
 </svg>
