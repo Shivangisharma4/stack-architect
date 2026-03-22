@@ -1,20 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
-  <!-- Top-left piece: tab right, tab down -->
-  <path d="M5,5 H50 V19 C62,19 62,31 50,31 V50 H31 C31,62 19,62 19,50 H5 Z"/>
-  <!-- Top-right piece: slot left, tab down -->
-  <path d="M50,5 H95 V50 H81 C81,62 69,62 69,50 H50 V31 C62,31 62,19 50,19 Z" opacity="0.75"/>
-  <!-- Bottom-left piece: slot top, tab right -->
-  <path d="M5,50 H19 C19,62 31,62 31,50 H50 V69 C62,69 62,81 50,81 V95 H5 Z" opacity="0.75"/>
-  <!-- Bottom-right piece: slot left, slot top -->
-  <path d="M50,50 H69 C69,62 81,62 81,50 H95 V95 H50 V81 C62,81 62,69 50,69 Z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Top-left: tab right, tab down -->
+  <path d="M4,4 H38 V18 Q38,14 42,14 Q48,14 48,22 Q48,30 42,30 Q38,30 38,26 V38 H26 Q30,38 30,42 Q30,48 22,48 Q14,48 14,42 Q14,38 18,38 H4 Z" fill="currentColor"/>
+
+  <!-- Top-right: slot left, tab down -->
+  <path d="M62,4 H96 V38 H82 Q86,38 86,42 Q86,48 78,48 Q70,48 70,42 Q70,38 74,38 H62 V26 Q62,30 58,30 Q52,30 52,22 Q52,14 58,14 Q62,14 62,18 Z" fill="currentColor" opacity="0.7"/>
+
+  <!-- Bottom-left: slot top, tab right -->
+  <path d="M4,62 H18 Q14,62 14,58 Q14,52 22,52 Q30,52 30,58 Q30,62 26,62 H38 V74 Q38,70 42,70 Q48,70 48,78 Q48,86 42,86 Q38,86 38,82 V96 H4 Z" fill="currentColor" opacity="0.7"/>
+
+  <!-- Bottom-right: slot left, slot top -->
+  <path d="M62,62 H74 Q70,62 70,58 Q70,52 78,52 Q86,52 86,58 Q86,62 82,62 H96 V96 H62 V82 Q62,86 58,86 Q52,86 52,78 Q52,70 58,70 Q62,70 62,74 Z" fill="currentColor"/>
+
   <!-- Corner dots -->
-  <circle cx="5" cy="5" r="3.5" opacity="0.7"/>
-  <circle cx="95" cy="5" r="3.5" opacity="0.7"/>
-  <circle cx="5" cy="95" r="3.5" opacity="0.7"/>
-  <circle cx="95" cy="95" r="3.5" opacity="0.7"/>
+  <circle cx="4" cy="4" r="3" fill="currentColor" opacity="0.6"/>
+  <circle cx="96" cy="4" r="3" fill="currentColor" opacity="0.6"/>
+  <circle cx="4" cy="96" r="3" fill="currentColor" opacity="0.6"/>
+  <circle cx="96" cy="96" r="3" fill="currentColor" opacity="0.6"/>
+
   <!-- Mid-edge dots -->
-  <circle cx="50" cy="5" r="3" opacity="0.7"/>
-  <circle cx="50" cy="95" r="3" opacity="0.7"/>
-  <circle cx="5" cy="50" r="3" opacity="0.7"/>
-  <circle cx="95" cy="50" r="3" opacity="0.7"/>
+  <circle cx="50" cy="4" r="2.5" fill="currentColor" opacity="0.6"/>
+  <circle cx="50" cy="96" r="2.5" fill="currentColor" opacity="0.6"/>
+  <circle cx="4" cy="50" r="2.5" fill="currentColor" opacity="0.6"/>
+  <circle cx="96" cy="50" r="2.5" fill="currentColor" opacity="0.6"/>
 </svg>

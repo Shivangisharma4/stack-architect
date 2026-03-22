@@ -170,7 +170,7 @@ export default function Home() {
         {/* Nav */}
         <nav className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <Image src="/logo.svg" alt="Stack Architect" width={24} height={24} className="text-accent" style={{ filter: "brightness(0) invert(0.9)" }} />
+            <Image src="/logo.svg" alt="Stack Architect" width={28} height={28} className="invert opacity-90" />
             <span className="text-sm font-medium tracking-wide font-[family-name:var(--font-serif)] italic">
               stack architect
             </span>
@@ -325,7 +325,7 @@ export default function Home() {
       <div className="min-h-screen flex flex-col">
         <nav className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <Image src="/logo.svg" alt="Stack Architect" width={24} height={24} className="text-accent" style={{ filter: "brightness(0) invert(0.9)" }} />
+            <Image src="/logo.svg" alt="Stack Architect" width={28} height={28} className="invert opacity-90" />
             <span className="text-sm font-medium tracking-wide font-[family-name:var(--font-serif)] italic">
               stack architect
             </span>
@@ -344,7 +344,7 @@ export default function Home() {
       <div className="min-h-screen flex flex-col">
         <nav className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <Image src="/logo.svg" alt="Stack Architect" width={24} height={24} className="text-accent" style={{ filter: "brightness(0) invert(0.9)" }} />
+            <Image src="/logo.svg" alt="Stack Architect" width={28} height={28} className="invert opacity-90" />
             <span className="text-sm font-medium tracking-wide font-[family-name:var(--font-serif)] italic">
               stack architect
             </span>
