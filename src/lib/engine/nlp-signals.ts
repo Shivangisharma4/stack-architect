@@ -204,12 +204,15 @@ const SIGNAL_RULES: SignalRule[] = [
     patterns: [
       /\bgame\s*(engine|dev|development|loop|physics)?\b/i,
       /\b(2d|3d)\s*(game|platformer|shooter|rpg|puzzle)\b/i,
-      /\b(arcade|retro|pixel[\s-]?art|sprite|tilemap)\b/i,
+      /\b(arcade|retro\s+game|pixel[\s-]?art\s*(game|platformer)|sprite|tilemap)\b/i,
       /\b(multiplayer|pvp|pve|mmo)\b/i,
-      /\bgaming\s+(animation|project|app)\b/i,
+      /\bgaming\b/i,
+      /\bgame\b/i,
+      /\bgam(e|ing)\s+animation/i,
+      /\banimated\s+(game|character|sprite)/i,
     ],
     keywords: [
-      "game", "gaming", "arcade", "retro", "pixel", "sprite",
+      "game", "gaming", "arcade", "pixel", "sprite",
       "platformer", "shooter", "rpg", "puzzle", "level",
       "enemy", "player", "score", "leaderboard", "highscore",
       "physics", "collision", "hitbox", "tilemap", "gamepad",

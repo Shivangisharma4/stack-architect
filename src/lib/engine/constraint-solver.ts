@@ -269,6 +269,13 @@ function getRelevantSlots(
 
     case "web":
     default:
+      // If gaming/creative signals are strong, swap frontend for game engine
+      if (signals.needsGaming > 0.3 || signals.needsCreative > 0.3 || signals.needs3D > 0.3) {
+        return {
+          primary: ["game", "language"],
+          optional: ["backend", "database", "hosting", "auth"],
+        };
+      }
       return {
         primary: ["frontend", "backend", "database", "hosting"],
         optional: ["orm", "auth", "cache", "cms", "language"],

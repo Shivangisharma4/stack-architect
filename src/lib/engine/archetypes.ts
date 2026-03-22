@@ -196,6 +196,58 @@ export const ARCHETYPES: Archetype[] = [
     stack: { desktop: "electron", language: "typescript-node" },
   },
 
+  // ---- Game Archetypes ----
+  {
+    id: "browser-game-2d",
+    name: "The Browser Game (2D)",
+    description: "Phaser for 2D games that run directly in the browser. Sprite-based, arcade physics, retro-perfect.",
+    triggerSignals: { needsGaming: 0.3 },
+    triggerScale: ["hobby", "startup"],
+    triggerTimeline: ["hackathon", "weeks", "months"],
+    triggerPlatforms: ["game", "web"],
+    stack: { game: "phaser", language: "typescript-node" },
+  },
+  {
+    id: "browser-game-3d",
+    name: "The Browser Game (3D)",
+    description: "Three.js for 3D browser experiences — games, visualizations, interactive 3D scenes.",
+    triggerSignals: { needsGaming: 0.3, needs3D: 0.3 },
+    triggerScale: ["hobby", "startup", "growth"],
+    triggerTimeline: ["weeks", "months"],
+    triggerPlatforms: ["game", "web"],
+    stack: { game: "threejs", language: "typescript-node" },
+  },
+  {
+    id: "rust-game",
+    name: "The Rust Game Engine",
+    description: "Bevy's ECS architecture with Rust's zero-cost abstractions. Maximum performance for serious game projects.",
+    triggerSignals: { needsGaming: 0.3 },
+    triggerScale: ["hobby", "startup", "growth"],
+    triggerTimeline: ["months", "no-rush"],
+    triggerPlatforms: ["game", "desktop"],
+    stack: { game: "bevy", language: "rust-lang" },
+  },
+  {
+    id: "godot-game",
+    name: "The Godot Engine",
+    description: "Open-source, batteries-included game engine. GDScript is easy to learn, 2D and 3D capable.",
+    triggerSignals: { needsGaming: 0.5 },
+    triggerScale: ["hobby", "startup"],
+    triggerTimeline: ["weeks", "months"],
+    triggerPlatforms: ["game", "desktop"],
+    stack: { game: "godot" },
+  },
+  {
+    id: "creative-coding",
+    name: "The Creative Canvas",
+    description: "p5.js for generative art, interactive visuals, and creative coding experiments.",
+    triggerSignals: { needsCreative: 0.4 },
+    triggerScale: ["hobby", "startup"],
+    triggerTimeline: ["hackathon", "weeks"],
+    triggerPlatforms: ["game", "web"],
+    stack: { game: "p5js", language: "typescript-node" },
+  },
+
   // ---- Script / CLI Archetypes ----
   {
     id: "python-script",
@@ -245,6 +297,13 @@ export function findBestArchetype(
       if (!arch.triggerPlatforms.includes(inputs.platform)) continue;
       factors++;
       score += 1;
+    }
+
+    // CRITICAL: If gaming/creative/3D signals are strong, skip web archetypes
+    // that don't have a game engine — they'll just recommend Next.js
+    const hasStrongGameSignal = signals.needsGaming > 0.3 || signals.needsCreative > 0.3 || signals.needs3D > 0.3;
+    if (hasStrongGameSignal && !arch.stack.game) {
+      continue;
     }
 
     // Scale match
